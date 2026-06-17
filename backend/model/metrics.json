@@ -1,0 +1,20 @@
+{
+  "best_model": "GradientBoosting",
+  "results": {
+    "LinearRegression": {
+      "MAE": 1486596.2,
+      "RMSE": 2256096.34,
+      "R2": 0.8813
+    },
+    "RandomForest": {
+      "MAE": 1969830.7,
+      "RMSE": 2768910.66,
+      "R2": 0.8212
+    },
+    "GradientBoosting": {
+      "MAE": 1353643.81,
+      "RMSE": 1945649.88,
+      "R2": 0.9117
+    }
+  }
+}

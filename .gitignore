@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+env/
+
+# Data / model artifacts
+backend/data/users.db
+backend/data/house_data_clean.csv
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
+
+# Flask
+*.log
+instance/
