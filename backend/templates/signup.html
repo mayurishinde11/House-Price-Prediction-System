@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign up · EstateIQ</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <style>
+    .auth-wrap { max-width: 400px; margin: 70px auto 100px; padding: 0 16px; }
+    .auth-card { padding: 32px; }
+    .auth-card h1 { font-family: var(--font-display); font-size: 26px; margin-bottom: 6px; }
+    .auth-card p.subhead { font-size: 13.5px; margin-bottom: 24px; }
+    .auth-switch { text-align: center; margin-top: 18px; font-size: 13.5px; color: var(--text-secondary); }
+    .auth-switch a { color: var(--accent-teal); font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    {% include 'partials/navbar.html' %}
+
+    <main class="container">
+      <div class="auth-wrap">
+        <div class="card auth-card">
+          <h1>Create your account</h1>
+          <p class="subhead">Save estimates and build a budget plan around them.</p>
+
+          <form id="signup-form">
+            <div class="field-group">
+              <label class="field-label" for="email">Email</label>
+              <input class="field-input" type="email" id="email" required>
+            </div>
+            <div class="field-group">
+              <label class="field-label" for="password">Password</label>
+              <input class="field-input" type="password" id="password" minlength="6" required>
+            </div>
+            <div class="error-banner" id="error-banner" style="display:none;"></div>
+            <button type="submit" class="btn btn-primary mt-8">Sign up</button>
+          </form>
+
+          <div class="auth-switch">Already have an account? <a href="/login">Log in</a></div>
+        </div>
+      </div>
+    </main>
+
+    {% include 'partials/footer.html' %}
+  </div>
+
+  <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+  <script>
+    document.getElementById('signup-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const banner = document.getElementById('error-banner');
+      banner.style.display = 'none';
+
+      const res = await fetch('/api/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: document.getElementById('email').value,
+          password: document.getElementById('password').value,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        banner.textContent = data.error || 'Sign up failed';
+        banner.style.display = 'block';
+        return;
+      }
+      window.location.href = '/predict';
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Budget · EstateIQ</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <style>
+    .budget-hero { padding: 48px 0 12px; }
+    .budget-grid { display: grid; grid-template-columns: 380px 1fr; gap: 24px; padding: 28px 0 64px; }
+    .budget-form { padding: 26px; }
+    .budget-result { padding: 30px; }
+    .budget-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--card-border); font-size: 14px; }
+    .budget-row:last-child { border-bottom: none; }
+    .budget-row strong { font-family: var(--font-display); font-size: 17px; }
+    @media (max-width: 860px) { .budget-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    {% include 'partials/navbar.html' %}
+
+    <main class="container">
+      <div class="budget-hero">
+        <div class="eyebrow">Budget planner</div>
+        <h1 class="headline">What can you afford?</h1>
+        <p class="subhead">Estimate your EMI and total interest for a given price, down payment, and loan term.</p>
+      </div>
+
+      <div class="budget-grid">
+        <form class="card budget-form" id="budget-form">
+          <div class="field-group">
+            <label class="field-label" for="price">Property price (₹)</label>
+            <input class="field-input" type="number" id="price" value="6000000" min="0" required>
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="down-payment">Down payment (₹)</label>
+            <input class="field-input" type="number" id="down-payment" value="1200000" min="0" required>
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="rate">Interest rate (% per year)</label>
+            <input class="field-input" type="number" id="rate" value="8.5" step="0.1" min="0" required>
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="years">Loan term (years)</label>
+            <input class="field-input" type="number" id="years" value="20" min="1" max="30" required>
+          </div>
+          <button type="submit" class="btn btn-primary mt-8">Calculate EMI</button>
+        </form>
+
+        <div class="card budget-result" id="budget-result">
+          <div class="result-label">Monthly EMI</div>
+          <div class="result-price" id="emi-output">₹0</div>
+          <div class="mt-24">
+            <div class="budget-row"><span>Loan amount</span><strong id="loan-amount-output">₹0</strong></div>
+            <div class="budget-row"><span>Total interest paid</span><strong id="total-interest-output">₹0</strong></div>
+            <div class="budget-row"><span>Total repayment</span><strong id="total-repayment-output">₹0</strong></div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    {% include 'partials/footer.html' %}
+  </div>
+
+  <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/budget.js') }}"></script>
+</body>
+</html>

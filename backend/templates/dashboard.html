@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard · EstateIQ</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <style>
+    .dash-hero { padding: 48px 0 12px; }
+    .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding: 28px 0 64px; }
+    .stat-card { padding: 24px; }
+    .stat-label { font-size: 12.5px; color: var(--text-secondary); margin-bottom: 8px; }
+    .stat-value { font-family: var(--font-display); font-size: 30px; font-weight: 600; }
+    @media (max-width: 860px) { .stat-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    {% include 'partials/navbar.html' %}
+
+    <main class="container">
+      <div class="dash-hero">
+        <div class="eyebrow">Dashboard</div>
+        <h1 class="headline">Model at a glance</h1>
+        <p class="subhead">Performance of the trained price-prediction model on held-out data.</p>
+      </div>
+
+      <div class="stat-grid" id="stat-grid">
+        <div class="card stat-card">
+          <div class="stat-label">Best model</div>
+          <div class="stat-value">—</div>
+        </div>
+        <div class="card stat-card">
+          <div class="stat-label">R² score</div>
+          <div class="stat-value">—</div>
+        </div>
+        <div class="card stat-card">
+          <div class="stat-label">Mean absolute error</div>
+          <div class="stat-value">—</div>
+        </div>
+      </div>
+    </main>
+
+    {% include 'partials/footer.html' %}
+  </div>
+
+  <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>

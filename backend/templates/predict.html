@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Predict · EstateIQ</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/predict.css') }}">
+</head>
+<body>
+  <div class="page-shell">
+
+    {% include 'partials/navbar.html' %}
+
+    <main class="container">
+      <div class="predict-hero">
+        <div class="eyebrow">Price predictor</div>
+        <h1 class="headline">What's it worth?</h1>
+        <p class="subhead">Pick a location and property details for an instant AI estimate.</p>
+      </div>
+
+      <div class="predict-grid">
+
+        <!-- Form card -->
+        <form class="card form-card" id="predict-form">
+          <div class="field-group">
+            <label class="field-label" for="state-select">State</label>
+            <select class="field-select" id="state-select" disabled>
+              <option selected disabled>Loading...</option>
+            </select>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="city-select">City</label>
+            <select class="field-select" id="city-select" disabled>
+              <option selected disabled>Select...</option>
+            </select>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="locality-select">Locality</label>
+            <select class="field-select" id="locality-select" disabled>
+              <option selected disabled>Select...</option>
+            </select>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="area-input">Area (sq ft)</label>
+            <input class="field-input" type="number" id="area-input" min="100" value="1000" required>
+          </div>
+
+          <div class="beds-baths-row field-group">
+            <div>
+              <label class="field-label" for="beds-input">Beds</label>
+              <input class="field-input" type="number" id="beds-input" min="1" max="10" value="2" required>
+            </div>
+            <div>
+              <label class="field-label" for="baths-input">Baths</label>
+              <input class="field-input" type="number" id="baths-input" min="1" max="10" value="2" required>
+            </div>
+            <div>
+              <label class="field-label" for="parking-input">Parking</label>
+              <input class="field-input" type="number" id="parking-input" min="0" max="5" value="1">
+            </div>
+          </div>
+
+          <div class="beds-baths-row field-group">
+            <div>
+              <label class="field-label" for="type-select">Type</label>
+              <select class="field-select" id="type-select">
+                <option>Apartment</option>
+                <option>Independent House</option>
+                <option>Villa</option>
+                <option>Builder Floor</option>
+              </select>
+            </div>
+            <div>
+              <label class="field-label" for="furnishing-select">Furnishing</label>
+              <select class="field-select" id="furnishing-select">
+                <option>Unfurnished</option>
+                <option>Semi-Furnished</option>
+                <option>Furnished</option>
+              </select>
+            </div>
+            <div>
+              <label class="field-label" for="age-input">Age (yrs)</label>
+              <input class="field-input" type="number" id="age-input" min="0" max="80" value="5">
+            </div>
+          </div>
+
+          <div class="error-banner" id="error-banner" style="display:none;"></div>
+
+          <button type="submit" class="btn btn-primary mt-16" id="submit-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg>
+            Predict price
+          </button>
+        </form>
+
+        <!-- Showcase / result card -->
+        <div class="card showcase-card" style="background-image: linear-gradient(160deg, #11182c 0%, #0a0e1a 100%);">
+          <div class="showcase-overlay" id="showcase-content">
+            <div class="showcase-empty-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg>
+            </div>
+            <div class="showcase-empty-title">Your estimate appears here</div>
+            <div class="showcase-empty-sub">Fill the form and hit predict.</div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    {% include 'partials/footer.html' %}
+  </div>
+
+  <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/predict.js') }}"></script>
+</body>
+</html>
