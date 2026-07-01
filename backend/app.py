@@ -80,32 +80,32 @@ def login_required(fn):
 # ---------------------------------------------------------------------
 @app.route("/")
 def home():
-    return render_template("index.html")
+    return render_template("index.html", active="home")
 
 
 @app.route("/predict")
 def predict_page():
-    return render_template("predict.html")
+    return render_template("predict.html", active="predict")
 
 
 @app.route("/budget")
 def budget_page():
-    return render_template("budget.html")
+    return render_template("budget.html", active="budget")
 
 
 @app.route("/dashboard")
 def dashboard_page():
-    return render_template("dashboard.html")
+    return render_template("dashboard.html", active="dashboard")
 
 
 @app.route("/login")
 def login_page():
-    return render_template("login.html")
+    return render_template("login.html", active="login")
 
 
 @app.route("/signup")
 def signup_page():
-    return render_template("signup.html")
+    return render_template("signup.html", active="signup")
 
 
 # ---------------------------------------------------------------------
