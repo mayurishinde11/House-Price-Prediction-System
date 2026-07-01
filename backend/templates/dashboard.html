@@ -110,6 +110,13 @@
           <div style="color: var(--text-muted); font-size: 13.5px;">Loading chart...</div>
         </div>
       </div>
+    <!-- Prediction history -->
+      <div class="chart-section" id="history-section" style="display:none;">
+        <div class="chart-title">Your recent estimates</div>
+        <div class="chart-subtitle">Last 10 predictions you made while logged in.</div>
+        <div class="card chart-card" id="history-list"></div>
+      </div>
+
     </main>
 
     {% include 'partials/footer.html' %}

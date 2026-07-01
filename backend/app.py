@@ -69,6 +69,24 @@ def init_db():
             password_hash TEXT NOT NULL
         )
     """)
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS predictions (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            email TEXT NOT NULL,
+            state TEXT,
+            city TEXT,
+            locality TEXT,
+            area_sqft REAL,
+            bedrooms INTEGER,
+            bathrooms INTEGER,
+            property_type TEXT,
+            furnishing TEXT,
+            predicted_price REAL,
+            price_per_sqft REAL,
+            trend_label TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
     conn.commit()
     conn.close()
 
@@ -190,6 +208,34 @@ def api_locations():
 def api_metrics():
     return jsonify(METRICS)
 
+@app.route("/api/history")
+def api_history():
+    if "user_email" not in session:
+        return jsonify([])
+    conn = sqlite3.connect(DB_PATH)
+    rows = conn.execute("""
+        SELECT state, city, locality, area_sqft, bedrooms,
+               property_type, predicted_price, price_per_sqft,
+               trend_label, created_at
+        FROM predictions
+        WHERE email = ?
+        ORDER BY created_at DESC
+        LIMIT 10
+    """, (session["user_email"],)).fetchall()
+    conn.close()
+
+    history = []
+    for r in rows:
+        history.append({
+            "state": r[0], "city": r[1], "locality": r[2],
+            "area_sqft": r[3], "bedrooms": r[4],
+            "property_type": r[5],
+            "predicted_price": r[6],
+            "price_per_sqft": r[7],
+            "trend_label": r[8],
+            "created_at": r[9],
+        })
+    return jsonify(history)
 
 # ---------------------------------------------------------------------
 # Prediction API
@@ -256,6 +302,29 @@ def api_predict():
             trend = {"label": "Above average", "hint": f"This estimate is {diff_pct:.0f}% above the average for {row['locality']}.", "type": "warning"}
         else:
             trend = {"label": "High end", "hint": f"This estimate is {diff_pct:.0f}% above the average for {row['locality']}.", "type": "warning"}
+
+    # Save prediction to history if user is logged in
+    if "user_email" in session:
+        try:
+            conn = sqlite3.connect(DB_PATH)
+            conn.execute("""
+                INSERT INTO predictions
+                (email, state, city, locality, area_sqft, bedrooms, bathrooms,
+                 property_type, furnishing, predicted_price, price_per_sqft, trend_label)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                session["user_email"],
+                row["state"], row["city"], row["locality"],
+                row["area_sqft"], row["bedrooms"], row["bathrooms"],
+                row["property_type"], row["furnishing"],
+                round(prediction, -3),
+                round(prediction / row["area_sqft"], 2),
+                trend["label"] if trend else None,
+            ))
+            conn.commit()
+            conn.close()
+        except Exception:
+            pass
 
     return jsonify({
         "predicted_price": round(prediction, -3),

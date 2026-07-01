@@ -90,3 +90,55 @@ async function loadMetrics() {
 }
 
 loadMetrics();
+
+function formatINR(amount) {
+  return new Intl.NumberFormat('en-IN', {
+    style: 'currency', currency: 'INR', maximumFractionDigits: 0,
+  }).format(amount);
+}
+
+async function loadHistory() {
+  try {
+    const res = await fetch('/api/history');
+    const history = await res.json();
+
+    const section = document.getElementById('history-section');
+    const list = document.getElementById('history-list');
+
+    if (!history || history.length === 0) {
+      section.style.display = 'none';
+      return;
+    }
+
+    section.style.display = 'block';
+    list.innerHTML = history.map(h => `
+      <div style="display:flex; justify-content:space-between; align-items:center;
+                  padding: 14px 0; border-bottom: 1px solid var(--card-border);">
+        <div>
+          <div style="font-size:14px; font-weight:600; margin-bottom:4px;">
+            ${h.bedrooms} BHK ${h.property_type} · ${h.locality}, ${h.city}
+          </div>
+          <div style="font-size:12.5px; color:var(--text-muted);">
+            ${h.area_sqft} sq ft · ₹${h.price_per_sqft}/sq ft
+            ${h.trend_label ? `· <span style="color:var(--accent-teal)">${h.trend_label}</span>` : ''}
+          </div>
+        </div>
+        <div style="font-family:var(--font-display); font-size:18px; font-weight:600;
+                    color:var(--text-primary); text-align:right;">
+          ${formatINR(h.predicted_price)}
+        </div>
+      </div>
+    `).join('');
+
+    // Remove border from last item
+    const items = list.querySelectorAll('div[style*="border-bottom"]');
+    if (items.length > 0) {
+      items[items.length - 1].style.borderBottom = 'none';
+    }
+
+  } catch (err) {
+    console.error('Failed to load history:', err);
+  }
+}
+
+loadHistory();
