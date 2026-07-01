@@ -88,7 +88,8 @@ candidates = {
         n_estimators=200, max_depth=14, random_state=42, n_jobs=-1
     ),
     "GradientBoosting": GradientBoostingRegressor(
-        n_estimators=200, max_depth=4, learning_rate=0.08, random_state=42
+        n_estimators=500, max_depth=4, learning_rate=0.05,
+        subsample=0.85, min_samples_leaf=3, random_state=42
     ),
 }
 

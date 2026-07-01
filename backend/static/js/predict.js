@@ -137,8 +137,17 @@ form.addEventListener('submit', async (e) => {
     property_age_years: document.getElementById('age-input').value,
   };
 
-  if (!payload.state || !payload.city || !payload.locality) {
+  const invalidFields = [];
+  if (!payload.state) invalidFields.push(stateSelect);
+  if (!payload.city) invalidFields.push(citySelect);
+  if (!payload.locality) invalidFields.push(localitySelect);
+
+  document.querySelectorAll('.field-invalid').forEach((el) => el.classList.remove('field-invalid'));
+
+  if (invalidFields.length > 0) {
+    invalidFields.forEach((el) => el.classList.add('field-invalid'));
     showError('Pick a state, city, and locality first.');
+    invalidFields[0].focus();
     return;
   }
 

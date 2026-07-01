@@ -24,6 +24,13 @@
   gap: 12px;
 }
 
+.beds-baths-row .field-select {
+  font-size: 12.5px;
+  padding: 11px 10px;
+  background-position: right 8px center;
+}
+
+
 .beds-baths-row .field-group { margin-bottom: 0; }
 
 /* Showcase panel: background image + glass result overlay */
@@ -149,4 +156,9 @@
 @media (max-width: 860px) {
   .predict-grid { grid-template-columns: 1fr; }
   .showcase-card { min-height: 320px; }
+}
+
+.field-invalid {
+  border-color: var(--danger) !important;
+  box-shadow: 0 0 0 1px rgba(248,113,113,0.3);
 }
