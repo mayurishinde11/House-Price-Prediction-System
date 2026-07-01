@@ -89,9 +89,29 @@ function renderResult(data) {
     ? Math.min(100, Math.max(0, ((predicted_price - price_range.low) / rangeSpan) * 100))
     : 50;
 
+  // Build property summary line
+  const bhk = `${input.bedrooms} BHK`;
+  const area = `${input.area_sqft.toLocaleString('en-IN')} sq ft`;
+  const type = input.property_type;
+  const furnishing = input.furnishing;
+  const age = input.property_age_years === 0
+    ? 'New property'
+    : `${input.property_age_years} yr old`;
+
   showcase.innerHTML = `
     <div class="result-wrap">
-      <div class="result-label">Estimated value</div>
+
+      <!-- Property summary strip -->
+      <div class="result-summary">
+        <span class="summary-tag">${bhk}</span>
+        <span class="summary-tag">${type}</span>
+        <span class="summary-tag">${area}</span>
+        <span class="summary-tag">${furnishing}</span>
+        <span class="summary-tag">${age}</span>
+        <span class="summary-tag">${input.locality}, ${input.city}</span>
+      </div>
+
+      <div class="result-label" style="margin-top: 18px;">Estimated value</div>
       <div class="result-price">${formatINR(predicted_price)}</div>
 
       <div class="result-range-bar">
@@ -105,8 +125,8 @@ function renderResult(data) {
         <div class="result-meta-item">Price / sq ft
           <strong>${formatINR(price_per_sqft)}</strong>
         </div>
-        <div class="result-meta-item">Location
-          <strong>${input.locality}, ${input.city}</strong>
+        <div class="result-meta-item">State
+          <strong>${input.state}</strong>
         </div>
       </div>
     </div>
