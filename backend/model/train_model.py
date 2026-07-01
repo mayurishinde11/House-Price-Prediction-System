@@ -133,7 +133,37 @@ for state in sorted(df["state"].unique()):
 with open(os.path.join(MODEL_DIR, "locations.json"), "w") as f:
     json.dump(location_map, f, indent=2)
 
+# Feature importance (only available for tree-based models)
+feature_importance = []
+try:
+    ohe_features = list(
+        best_pipeline.named_steps["preprocessor"]
+        .named_transformers_["cat"]
+        .get_feature_names_out(CATEGORICAL_FEATURES)
+    )
+    all_features = ohe_features + NUMERIC_FEATURES
+    importances = best_pipeline.named_steps["model"].feature_importances_
+    paired = sorted(
+        zip(all_features, importances), key=lambda x: x[1], reverse=True
+    )
+    # Keep top 10 most important features
+    # Collapse OHE features back to their original column name
+    collapsed = {}
+    for fname, imp in paired:
+        # OHE features look like "state_Maharashtra", "city_Mumbai" etc.
+        base = fname.split("_")[0] if "_" in fname else fname
+        collapsed[base] = collapsed.get(base, 0) + imp
+    # Sort collapsed and take top 8
+    top = sorted(collapsed.items(), key=lambda x: x[1], reverse=True)[:8]
+    feature_importance = [{"feature": k, "importance": round(v, 4)} for k, v in top]
+except Exception:
+    pass
+
 with open(os.path.join(MODEL_DIR, "metrics.json"), "w") as f:
-    json.dump({"best_model": best_name, "results": results}, f, indent=2)
+    json.dump({
+        "best_model": best_name,
+        "results": results,
+        "feature_importance": feature_importance,
+    }, f, indent=2)
 
 print("Saved locations.json and metrics.json")

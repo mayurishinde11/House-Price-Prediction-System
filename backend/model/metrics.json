@@ -16,5 +16,39 @@
       "RMSE": 1572834.98,
       "R2": 0.9423
     }
-  }
+  },
+  "feature_importance": [
+    {
+      "feature": "area",
+      "importance": 0.3814
+    },
+    {
+      "feature": "city",
+      "importance": 0.2905
+    },
+    {
+      "feature": "locality",
+      "importance": 0.2218
+    },
+    {
+      "feature": "state",
+      "importance": 0.0618
+    },
+    {
+      "feature": "property",
+      "importance": 0.0359
+    },
+    {
+      "feature": "furnishing",
+      "importance": 0.0054
+    },
+    {
+      "feature": "floor",
+      "importance": 0.0015
+    },
+    {
+      "feature": "total",
+      "importance": 0.0006
+    }
+  ]
 }
