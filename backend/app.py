@@ -46,6 +46,16 @@ with open(LOCATIONS_PATH) as f:
 with open(METRICS_PATH) as f:
     METRICS = json.load(f)
 
+# Load locality averages for price trend indicator
+_df = pd.read_csv(os.path.join(BASE_DIR, "data", "house_data.csv"))
+LOCALITY_AVERAGES = (
+    _df.groupby(["state", "city", "locality"])["price_inr"]
+    .mean()
+    .round(-3)
+    .to_dict()
+)
+del _df
+
 
 # ---------------------------------------------------------------------
 # Tiny SQLite user store
@@ -230,6 +240,23 @@ def api_predict():
     low = prediction * 0.92
     high = prediction * 1.08
 
+    # Price trend indicator
+    avg_key = (row["state"], row["city"], row["locality"])
+    locality_avg = LOCALITY_AVERAGES.get(avg_key)
+    trend = None
+    if locality_avg:
+        diff_pct = ((prediction - locality_avg) / locality_avg) * 100
+        if diff_pct <= -15:
+            trend = {"label": "Great deal", "hint": f"This estimate is {abs(diff_pct):.0f}% below the average for {row['locality']}.", "type": "positive"}
+        elif diff_pct <= -5:
+            trend = {"label": "Below average", "hint": f"This estimate is {abs(diff_pct):.0f}% below the average for {row['locality']}.", "type": "positive"}
+        elif diff_pct <= 5:
+            trend = {"label": "Around average", "hint": f"This estimate is close to the average for {row['locality']}.", "type": "neutral"}
+        elif diff_pct <= 15:
+            trend = {"label": "Above average", "hint": f"This estimate is {diff_pct:.0f}% above the average for {row['locality']}.", "type": "warning"}
+        else:
+            trend = {"label": "High end", "hint": f"This estimate is {diff_pct:.0f}% above the average for {row['locality']}.", "type": "warning"}
+
     return jsonify({
         "predicted_price": round(prediction, -3),
         "price_range": {
@@ -237,6 +264,7 @@ def api_predict():
             "high": round(high, -3),
         },
         "price_per_sqft": round(prediction / row["area_sqft"], 2),
+        "trend": trend,
         "input": row,
     })
 

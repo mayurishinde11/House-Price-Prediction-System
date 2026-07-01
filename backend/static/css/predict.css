@@ -180,3 +180,23 @@
   border: 1px solid rgba(99,102,241,0.3);
   color: var(--text-secondary);
 }
+
+/* Price trend indicator */
+.trend-badge {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  margin-top: 14px;
+}
+
+.trend-label {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.trend-hint {
+  font-size: 12px;
+  opacity: 0.85;
+}

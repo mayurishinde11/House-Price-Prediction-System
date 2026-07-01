@@ -89,7 +89,7 @@ function renderResult(data) {
     ? Math.min(100, Math.max(0, ((predicted_price - price_range.low) / rangeSpan) * 100))
     : 50;
 
-  // Build property summary line
+  // Build property summary tags
   const bhk = `${input.bedrooms} BHK`;
   const area = `${input.area_sqft.toLocaleString('en-IN')} sq ft`;
   const type = input.property_type;
@@ -98,10 +98,39 @@ function renderResult(data) {
     ? 'New property'
     : `${input.property_age_years} yr old`;
 
+  // Build trend badge
+  let trendHTML = '';
+  if (data.trend) {
+    const colors = {
+      positive: 'rgba(45,212,168,0.15)',
+      neutral: 'rgba(99,102,241,0.15)',
+      warning: 'rgba(251,191,36,0.15)',
+    };
+    const borderColors = {
+      positive: 'rgba(45,212,168,0.4)',
+      neutral: 'rgba(99,102,241,0.4)',
+      warning: 'rgba(251,191,36,0.4)',
+    };
+    const textColors = {
+      positive: '#2dd4a8',
+      neutral: '#818cf8',
+      warning: '#fbbf24',
+    };
+    const t = data.trend;
+    trendHTML = `
+      <div class="trend-badge" style="
+        background: ${colors[t.type]};
+        border: 1px solid ${borderColors[t.type]};
+        color: ${textColors[t.type]};
+      ">
+        <span class="trend-label">${t.label}</span>
+        <span class="trend-hint">${t.hint}</span>
+      </div>
+    `;
+  }
+
   showcase.innerHTML = `
     <div class="result-wrap">
-
-      <!-- Property summary strip -->
       <div class="result-summary">
         <span class="summary-tag">${bhk}</span>
         <span class="summary-tag">${type}</span>
@@ -113,6 +142,8 @@ function renderResult(data) {
 
       <div class="result-label" style="margin-top: 18px;">Estimated value</div>
       <div class="result-price">${formatINR(predicted_price)}</div>
+
+      ${trendHTML}
 
       <div class="result-range-bar">
         <div class="result-range-fill" style="width: ${fillPct}%"></div>
