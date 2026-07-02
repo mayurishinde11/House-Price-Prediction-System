@@ -237,6 +237,65 @@ def api_history():
         })
     return jsonify(history)
 
+
+@app.route("/api/search", methods=["POST"])
+def api_search():
+    data = request.get_json(force=True)
+    budget = float(data.get("budget") or 0)
+    bedrooms = int(data.get("bedrooms") or 1)
+    property_type = data.get("property_type") or "Apartment"
+    state_filter = data.get("state") or None
+
+    if budget <= 0:
+        return jsonify({"error": "Please enter a valid budget"}), 400
+
+    # Search through locality averages to find affordable options
+    results = []
+    for (state, city, locality), avg_price in LOCALITY_AVERAGES.items():
+        if state_filter and state != state_filter:
+            continue
+
+        if avg_price <= 0:
+            continue
+
+        # Calculate what area the user can afford in this locality
+        # Use a simple price-per-sqft estimate from locality average
+        # Assume average property is 1200 sqft
+        avg_psf = avg_price / 1200
+
+        if avg_psf <= 0:
+            continue
+
+        # What sqft can they afford?
+        affordable_sqft = budget / avg_psf
+
+        # Only show if they can get at least 300 sqft
+        if affordable_sqft < 300:
+            continue
+
+        # Estimate price for minimum viable property
+        # (bedrooms * 200 sqft minimum per bedroom)
+        min_sqft = max(300, bedrooms * 200)
+        min_price = avg_psf * min_sqft
+
+        if min_price > budget:
+            continue
+
+        results.append({
+            "state": state,
+            "city": city,
+            "locality": locality,
+            "avg_price_per_sqft": round(avg_psf, 0),
+            "affordable_sqft": round(affordable_sqft, 0),
+            "estimated_price": round(avg_psf * min_sqft, -3),
+            "value_score": round(affordable_sqft / budget * 100000, 2),
+        })
+
+    # Sort by most sqft for the budget (best value first)
+    results.sort(key=lambda x: x["affordable_sqft"], reverse=True)
+
+    # Return top 10 results
+    return jsonify(results[:10])
 # ---------------------------------------------------------------------
 # Prediction API
 # ---------------------------------------------------------------------
