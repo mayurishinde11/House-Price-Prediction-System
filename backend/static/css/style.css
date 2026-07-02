@@ -378,3 +378,31 @@ input, select { font-family: inherit; }
   .footer-grid { grid-template-columns: 1fr 1fr; }
   .nav-links { display: none; }
 }
+
+/* ---------------------------------------------------------------------
+   Light mode theme
+   --------------------------------------------------------------------- */
+body.light-mode {
+  --bg: #f4f5f7;
+  --bg-elevated: #ffffff;
+  --card: #ffffff;
+  --card-border: #e2e5ed;
+  --card-hover: #f0f2f7;
+  --text-primary: #111827;
+  --text-secondary: #4b5563;
+  --text-muted: #9ca3af;
+}
+
+body.light-mode .navbar {
+  background: rgba(244,245,247,0.85);
+}
+
+body.light-mode .field-input,
+body.light-mode .field-select {
+  background: #f9fafb;
+  color: #111827;
+}
+
+body.light-mode .showcase-card {
+  background-image: linear-gradient(160deg, #e8eaf0 0%, #d1d5e0 100%) !important;
+}
