@@ -160,6 +160,12 @@ function renderResult(data) {
           <strong>${input.state}</strong>
         </div>
       </div>
+
+      <a href="/budget?price=${predicted_price}"
+         class="btn btn-primary"
+         style="margin-top: 20px; text-decoration: none;">
+        Plan budget for this property →
+      </a>
     </div>
   `;
 }

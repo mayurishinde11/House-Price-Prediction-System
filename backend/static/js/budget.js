@@ -209,3 +209,20 @@ async function searchByBudget() {
     btn.disabled = false;
   }
 }
+
+// Pre-fill price from predict page if passed via URL
+(function () {
+  const params = new URLSearchParams(window.location.search);
+  const price = params.get('price');
+  if (price) {
+    const priceInput = document.getElementById('price');
+    if (priceInput) {
+      priceInput.value = price;
+      // Also pre-fill search budget
+      const searchBudget = document.getElementById('search-budget');
+      if (searchBudget) searchBudget.value = price;
+      // Recalculate EMI with new price
+      document.getElementById('budget-form').dispatchEvent(new Event('submit'));
+    }
+  }
+})();
